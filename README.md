@@ -38,8 +38,32 @@ pip install -r requirements.txt
 ### 3. Get an audio file
 
 Download any mono or stereo speech recording (WAV/MP3/FLAC) and save it as
-`speech.wav` in the project folder.  A good source is
-[freesound.org](https://freesound.org/search/?q=speech).
+`speech.wav` in the project folder.
+
+**Option A – public domain sample (no sign-in required):**
+
+```bash
+curl -L https://www2.cs.uic.edu/~i101/SoundFiles/preamble.wav -o speech.wav
+```
+
+**Option B – librosa built-in example:**
+
+```python
+import librosa, soundfile as sf
+y, sr = librosa.load(librosa.ex('trumpet'))
+sf.write('speech.wav', y, sr)
+```
+
+**Option C – automatic synthetic fallback (no download needed):**
+
+If `speech.wav` is missing or unreadable the runner automatically generates a
+5-second synthetic speech-like signal and continues with all 7 experiments.
+A warning is printed to stderr so you know which audio source was used.
+
+> **Note:** The freesound.org *direct-download* links require a logged-in
+> session; a bare `curl` of a freesound download URL will save an HTML login
+> page instead of an audio file, causing a *"Format not recognised"* error.
+> Use one of the options above to obtain a real audio file.
 
 ### 4. Run all experiments
 

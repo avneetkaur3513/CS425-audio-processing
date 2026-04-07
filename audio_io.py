@@ -135,3 +135,54 @@ def save_audio(filepath, signal, sr):
     """
     # soundfile writes float32 or float64 natively
     sf.write(filepath, signal.astype(np.float32), sr)
+
+
+def generate_synthetic_audio(duration=5.0, sr=44100):
+    """Generate a synthetic speech-like audio signal for testing.
+
+    The signal is a superposition of harmonics at typical speech fundamental
+    frequencies, amplitude-modulated to mimic voiced speech patterns.  It is
+    intended as a stand-in when a real audio file is unavailable.
+
+    Parameters
+    ----------
+    duration : float
+        Signal duration in seconds (default: 5.0).
+    sr : int
+        Sample rate in Hz (default: 44100).
+
+    Returns
+    -------
+    signal : np.ndarray
+        Mono audio signal normalised to [-1, 1].
+    sr : int
+        Sample rate (same as the input *sr*).
+    """
+    rng = np.random.default_rng(42)
+    t = np.linspace(0, duration, int(duration * sr), endpoint=False)
+
+    # Fundamental and harmonics for a speech-like tone (~150 Hz male voice)
+    f0 = 150.0
+    harmonics = [1, 2, 3, 4, 5, 6, 7, 8]
+    amplitudes = [1.0, 0.6, 0.4, 0.3, 0.2, 0.15, 0.1, 0.08]
+
+    signal = np.zeros_like(t)
+    for k, amp in zip(harmonics, amplitudes):
+        signal += amp * np.sin(2 * np.pi * f0 * k * t)
+
+    # Add a second formant region (~900 Hz) to simulate a vowel
+    signal += 0.3 * np.sin(2 * np.pi * 900.0 * t)
+
+    # Amplitude envelope: slow AM at 4 Hz to mimic syllable rhythm
+    envelope = 0.5 * (1.0 + np.sin(2 * np.pi * 4.0 * t))
+    signal *= envelope
+
+    # Low-level noise floor
+    signal += 0.01 * rng.standard_normal(len(t))
+
+    # Normalise to [-1, 1]
+    peak = np.max(np.abs(signal))
+    if peak > 0:
+        signal /= peak
+
+    return signal.astype(np.float32), sr
