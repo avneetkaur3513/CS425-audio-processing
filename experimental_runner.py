@@ -538,7 +538,7 @@ def experiment_dft_vs_fft(dirs: dict) -> dict:
 
     x = np.arange(len(lengths))
     width = 0.35
-    axes[0].bar(x - width / 2, timings_dft, width, label="DFT (naïve)")
+    axes[0].bar(x - width / 2, timings_dft, width, label="DFT (naive)")
     axes[0].bar(x + width / 2, timings_fft, width, label="FFT (numpy)")
     axes[0].set_xticks(x)
     axes[0].set_xticklabels([str(n) for n in lengths])

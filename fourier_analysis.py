@@ -50,8 +50,8 @@ def compute_dft_naive(signal):
     n = len(signal)
     k = np.arange(n)
     # Vandermonde matrix approach: X[k] = sum_n x[n] * exp(-j2pi*k*n/N)
-    twiddle = np.exp(-2j * np.pi * k[:, None] * k[None, :] / n)
-    return twiddle @ signal.astype(complex)
+    dft_matrix = np.exp(-2j * np.pi * k[:, None] * k[None, :] / n)
+    return dft_matrix @ signal.astype(complex)
 
 
 def benchmark_dft_vs_fft(signal_length, repetitions=3):
