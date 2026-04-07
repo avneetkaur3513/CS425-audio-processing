@@ -24,6 +24,7 @@ import json
 import os
 import sys
 import time as _time
+import warnings
 
 import matplotlib
 matplotlib.use("Agg")
@@ -564,27 +565,92 @@ def experiment_dft_vs_fft(dirs: dict) -> dict:
 # Main orchestrator
 # ---------------------------------------------------------------------------
 
+def _generate_synthetic_audio(filepath: str, sr: int = 44100, duration: float = 5.0) -> None:
+    """Write a multi-tone synthetic speech-like WAV file to *filepath*.
+
+    The signal is a sum of sinusoids at typical speech fundamental and harmonic
+    frequencies (100 Hz, 200 Hz, 300 Hz) with added broadband noise, providing
+    a realistic test signal when no real recording is available.
+
+    Parameters
+    ----------
+    filepath : str
+        Destination WAV path (created automatically).
+    sr : int
+        Sample rate in Hz (default 44100).
+    duration : float
+        Duration in seconds (default 5.0).
+    """
+    import soundfile as sf
+
+    t = np.linspace(0, duration, int(sr * duration), endpoint=False)
+    # Speech-like: fundamental + harmonics + gentle noise
+    signal = (
+        0.40 * np.sin(2 * np.pi * 100 * t)
+        + 0.25 * np.sin(2 * np.pi * 200 * t)
+        + 0.15 * np.sin(2 * np.pi * 300 * t)
+        + 0.10 * np.sin(2 * np.pi * 440 * t)
+        + 0.05 * np.random.default_rng(42).standard_normal(len(t))
+    )
+    # Normalise to [-1, 1]
+    signal = signal / np.max(np.abs(signal))
+    sf.write(filepath, signal.astype(np.float32), sr)
+
+
 def run_all_experiments(audio_file: str, output_dir: str = "outputs") -> None:
-    """Load *audio_file* and run all 7 experiments."""
+    """Load *audio_file* and run all 7 experiments.
+
+    If *audio_file* does not exist **or** cannot be decoded, a synthetic
+    speech-like WAV is generated automatically so the experiments can always
+    complete without manual setup.
+    """
+    # ------------------------------------------------------------------
+    # Resolve audio source
+    # ------------------------------------------------------------------
+    audio_source_note = ""
+
     if not os.path.isfile(audio_file):
-        print(
-            f"[ERROR] Audio file not found: {audio_file}\n"
-            "        Please provide a WAV/MP3/FLAC file as the first argument.\n"
-            "        Example: python experimental_runner.py speech.wav",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+        if audio_file == "speech.wav":
+            # Default file missing – silently create a synthetic one
+            print(
+                f"[INFO] '{audio_file}' not found – generating a synthetic test signal …"
+            )
+            _generate_synthetic_audio(audio_file)
+            audio_source_note = "  (synthetic test signal – replace with a real recording for best results)"
+        else:
+            # User explicitly named a file that doesn't exist → hard error
+            print(
+                f"[ERROR] Audio file not found: {audio_file}\n"
+                "        Please provide a valid WAV/MP3/FLAC file as the first argument.\n"
+                "        Example: python experimental_runner.py speech.wav",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
     print(f"\n{'#' * 70}")
     print("#  CS425 Assignment 1 – Experimental Runner")
-    print(f"#  Audio file : {audio_file}")
+    print(f"#  Audio file : {audio_file}{audio_source_note}")
     print(f"#  Output dir : {output_dir}")
     print(f"{'#' * 70}\n")
 
     dirs = ensure_output_dirs(output_dir)
 
     print(f"[Loading] {audio_file} …")
-    signal, sr = load_audio(audio_file)
+    try:
+        signal, sr = load_audio(audio_file)
+    except Exception as exc:
+        # File exists but is unreadable (e.g. downloaded HTML page instead of
+        # a real audio file).  Fall back to a synthetic signal automatically.
+        warnings.warn(
+            f"Could not load '{audio_file}' ({exc}). "
+            "Falling back to a synthetic test signal.",
+            stacklevel=2,
+        )
+        synthetic_path = os.path.splitext(audio_file)[0] + "_synthetic.wav"
+        print(f"[INFO] Writing fallback synthetic audio → {synthetic_path}")
+        _generate_synthetic_audio(synthetic_path)
+        signal, sr = load_audio(synthetic_path)
+        audio_file = synthetic_path
     duration = len(signal) / sr
     print(f"[Loaded]  {len(signal)} samples @ {sr} Hz  ({duration:.2f} s)\n")
 
