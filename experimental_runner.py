@@ -34,6 +34,7 @@ import pandas as pd
 from audio_io import (
     calculate_snr,
     dynamic_range_db,
+    generate_synthetic_audio,
     load_audio,
     quantize,
     resample_audio,
@@ -584,9 +585,30 @@ def run_all_experiments(audio_file: str, output_dir: str = "outputs") -> None:
     dirs = ensure_output_dirs(output_dir)
 
     print(f"[Loading] {audio_file} …")
-    signal, sr = load_audio(audio_file)
-    duration = len(signal) / sr
-    print(f"[Loaded]  {len(signal)} samples @ {sr} Hz  ({duration:.2f} s)\n")
+    try:
+        signal, sr = load_audio(audio_file)
+        duration = len(signal) / sr
+        print(f"[Loaded]  {len(signal)} samples @ {sr} Hz  ({duration:.2f} s)\n")
+    except Exception as exc:
+        print(
+            f"[WARNING] Could not load '{audio_file}': {exc}\n"
+            "          Falling back to a synthetic speech-like signal.\n"
+            "          To use a real audio file, supply a valid WAV/MP3/FLAC path.\n"
+            "          Tip: run  python -c \"import librosa; "
+            "librosa.output.write_wav('speech.wav', *librosa.load("
+            "librosa.ex('trumpet')))\"\n"
+            "          or download a WAV directly with:\n"
+            "            curl -L https://www2.cs.uic.edu/~i101/SoundFiles/preamble.wav"
+            " -o speech.wav",
+            file=sys.stderr,
+        )
+        signal, sr = generate_synthetic_audio()
+        duration = len(signal) / sr
+        print(
+            f"[Synthetic] Generated {len(signal)} samples @ {sr} Hz"
+            f"  ({duration:.2f} s)\n",
+            file=sys.stderr,
+        )
 
     all_results: list[dict] = []
     t_start = _time.perf_counter()
