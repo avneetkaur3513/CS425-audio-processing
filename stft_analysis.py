@@ -58,7 +58,7 @@ def stft_to_db(stft_matrix, ref=np.max):
     Returns
     -------
     np.ndarray
-        Power spectrogram in dB.
+        Magnitude (amplitude) spectrogram in dB.
     """
     magnitude = np.abs(stft_matrix)
     return librosa.amplitude_to_db(magnitude, ref=ref)
