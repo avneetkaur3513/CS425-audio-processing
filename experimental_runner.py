@@ -43,19 +43,17 @@ from effects import (
     clipped_sample_fraction,
     clipping_distortion_db,
     downsample,
-    downsample_with_filter,
     hard_clip,
     nyquist_frequency,
     soft_clip,
 )
 from fourier_analysis import (
-    apply_phase_shift,
     apply_time_shift,
     benchmark_dft_vs_fft,
     compute_fft,
     phase_shift_from_time_shift,
 )
-from main import ensure_output_dirs, plot_spectrum, plot_waveform, save_figure
+from main import ensure_output_dirs, plot_waveform, save_figure
 from stft_analysis import compute_stft, stft_parameter_summary, stft_to_db
 
 
