@@ -211,7 +211,7 @@ def experiment_time_phase_shift(signal: np.ndarray, sr: int, dirs: dict) -> dict
     _print_header("Experiment 3: Time and Phase Shift Analysis")
 
     shift_ms_values = [0, 10, 50]
-    # Use the dominant frequency (spectral centroid) for phase calculation
+    # Use the dominant frequency (peak-magnitude FFT bin) for phase calculation
     freqs, mag = compute_fft(signal, sr)
     dominant_freq = freqs[np.argmax(mag)]
     results = []
