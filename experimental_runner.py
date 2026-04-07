@@ -549,7 +549,7 @@ def experiment_dft_vs_fft(dirs: dict) -> dict:
     axes[1].plot(lengths, speedups, "o-", color="green", linewidth=2)
     axes[1].set_xlabel("Signal Length (samples)")
     axes[1].set_ylabel("Speedup (DFT / FFT)")
-    axes[1].set_title("FFT Speedup over Naïve DFT")
+    axes[1].set_title("FFT Speedup over Naive DFT")
     axes[1].grid(True, alpha=0.3)
 
     fig.tight_layout()
