@@ -30,6 +30,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import soundfile as sf
 
 from audio_io import (
     calculate_snr,
@@ -561,19 +562,70 @@ def experiment_dft_vs_fft(dirs: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Synthetic audio fallback
+# ---------------------------------------------------------------------------
+
+def _generate_synthetic_audio(filepath: str, sr: int = 44100, duration: float = 5.0) -> None:
+    """Generate a multi-harmonic synthetic speech-like WAV file.
+
+    Used as a fallback when no real audio file is provided.  The signal
+    combines several harmonics of A4 (440 Hz) plus low-level noise to
+    produce a signal whose spectral content exercises all experiments.
+
+    Parameters
+    ----------
+    filepath : str
+        Destination path for the generated WAV file.
+    sr : int
+        Sample rate in Hz (default: 44100).
+    duration : float
+        Signal length in seconds (default: 5.0).
+    """
+    rng = np.random.default_rng(42)
+    t = np.linspace(0, duration, int(sr * duration), endpoint=False)
+    # Fundamental + harmonics + vibrato-like amplitude modulation
+    signal = (
+        0.40 * np.sin(2 * np.pi * 440.0 * t) +
+        0.20 * np.sin(2 * np.pi * 880.0 * t) +
+        0.10 * np.sin(2 * np.pi * 1320.0 * t) +
+        0.05 * np.sin(2 * np.pi * 1760.0 * t) +
+        0.03 * rng.standard_normal(len(t))
+    )
+    # Normalise to 80 % of full scale
+    peak = np.max(np.abs(signal))
+    if peak > 0:
+        signal = signal / peak * 0.8
+    sf.write(filepath, signal.astype(np.float32), sr)
+    print(f"[Synthetic] Generated test audio → {filepath}  ({duration:.0f} s @ {sr} Hz)")
+
+
+# ---------------------------------------------------------------------------
 # Main orchestrator
 # ---------------------------------------------------------------------------
 
 def run_all_experiments(audio_file: str, output_dir: str = "outputs") -> None:
-    """Load *audio_file* and run all 7 experiments."""
+    """Load *audio_file* and run all 7 experiments.
+
+    If *audio_file* does not exist and its name is the default ``speech.wav``,
+    a synthetic multi-harmonic signal is generated automatically so that the
+    experiments can run without a real recording.
+    """
     if not os.path.isfile(audio_file):
-        print(
-            f"[ERROR] Audio file not found: {audio_file}\n"
-            "        Please provide a WAV/MP3/FLAC file as the first argument.\n"
-            "        Example: python experimental_runner.py speech.wav",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+        if audio_file == "speech.wav":
+            print(
+                "[INFO] speech.wav not found – generating a synthetic test signal.\n"
+                "       To use your own recording, run:\n"
+                "           python experimental_runner.py <your_file.wav>"
+            )
+            _generate_synthetic_audio(audio_file)
+        else:
+            print(
+                f"[ERROR] Audio file not found: {audio_file}\n"
+                "        Please provide a WAV/MP3/FLAC file as the first argument.\n"
+                "        Example: python experimental_runner.py speech.wav",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
     print(f"\n{'#' * 70}")
     print("#  CS425 Assignment 1 – Experimental Runner")

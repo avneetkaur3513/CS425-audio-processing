@@ -35,19 +35,26 @@ cd CS425-audio-processing
 pip install -r requirements.txt
 ```
 
-### 3. Get an audio file
+### 3. Run all experiments
 
-Download any mono or stereo speech recording (WAV/MP3/FLAC) and save it as
-`speech.wav` in the project folder.  A good source is
-[freesound.org](https://freesound.org/search/?q=speech).
-
-### 4. Run all experiments
+If you do not have a recording handy, just run the script directly — it will
+automatically generate a synthetic test signal (`speech.wav`) and use it:
 
 ```bash
 python experimental_runner.py
 ```
 
-Pass a custom file or output directory if needed:
+To use your own recording (WAV/MP3/FLAC), save it as `speech.wav` or pass it
+explicitly:
+
+```bash
+python experimental_runner.py my_audio.wav
+```
+
+A good source for free speech recordings is
+[freesound.org](https://freesound.org/search/?q=speech).
+
+Pass a custom output directory if needed:
 
 ```bash
 python experimental_runner.py my_audio.wav --output-dir results
