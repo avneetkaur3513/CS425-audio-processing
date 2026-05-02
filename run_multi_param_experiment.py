@@ -55,11 +55,11 @@ CONFIGURATIONS = [
     },
     {
         "name":         "Config_A_Best",
-        "description":  "Best: pre_emphasis=0.97, noise=0.0, speed=1.0, pitch=0",
+        "description":  "Best: pre_emphasis=0.97, noise=0.0, speed=0.9, pitch=0",
         "fig_no":       10,
         "pre_emphasis": 0.97,
         "noise_level":  0.0,
-        "speed_factor": 1.0,
+        "speed_factor": 0.9,
         "pitch_steps":  0,
     },
     {
