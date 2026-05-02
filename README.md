@@ -108,7 +108,7 @@ outputs/
 
 ---
 
-## Module Overview
+## Module Overview – Assignment 1 (Time & Frequency Domain)
 
 | File | Purpose |
 |------|---------|
@@ -118,6 +118,85 @@ outputs/
 | `stft_analysis.py` | STFT computation and resolution metrics |
 | `effects.py` | Hard/soft clipping, downsampling, aliasing |
 | `main.py` | CLI entry-point, plotting & directory utilities |
+
+---
+
+## Assignment 2 – Speech-to-Text & Text-to-Speech
+
+This section covers **Part 1 (STT)** and **Part 2 (TTS)** of Assignment 2.
+All new scripts are self-contained and do **not** modify the Assignment 1 code.
+
+### Audio file
+
+Place `Speaking_Female.wav` in the repository root before running the STT
+scripts.  If the file is absent the scripts automatically use a built-in
+synthetic speech-like signal so all plots are still produced.
+
+### Quick-run – regenerate ALL Assignment 2 results
+
+```bash
+# Part 1 – STT: A/B experiments for every parameter (Table 1, Figures 1–8)
+python run_stt_experiments.py Speaking_Female.wav
+
+# Part 1 – Multi-parameter best/worst experiment (Table 2, Figures 9–11)
+python run_multi_param_experiment.py Speaking_Female.wav
+
+# Part 2 – TTS parameter sweep for all 10 parameters (Table 3, Figures 12–31)
+python run_tts_experiments.py
+```
+
+For TTS synthesis with real speech (instead of the synthetic fallback) install
+`pyttsx3` and, on Linux, the `espeak-ng` system engine:
+
+```bash
+pip install SpeechRecognition pyttsx3
+sudo apt-get install espeak-ng   # Linux only
+```
+
+### Assignment 2 output structure
+
+```
+outputs/
+├── stt/
+│   ├── pre_emphasis_0.0.png          ← Figure 1
+│   ├── pre_emphasis_0.97.png         ← Figure 2
+│   ├── noise_level_0.0.png           ← Figure 3
+│   ├── noise_level_0.01.png          ← Figure 4
+│   ├── speed_factor_1.0.png          ← Figure 5
+│   ├── speed_factor_1.25.png         ← Figure 6
+│   ├── pitch_steps_0.png             ← Figure 7
+│   ├── pitch_steps_2.png             ← Figure 8
+│   ├── *_transcription.txt           ← STT output text
+│   └── multi_param/
+│       ├── multi_param_Original.png         ← Figure 9
+│       ├── multi_param_Config_A_Best.png    ← Figure 10
+│       └── multi_param_Config_B_Worst.png   ← Figure 11
+└── tts/
+    ├── tts_speech_rate_120.png       ← Figure 12
+    ├── tts_speech_rate_220.png       ← Figure 13
+    ├── … (Figures 14–31)
+    └── *.wav                         ← processed TTS audio files
+```
+
+### Report template
+
+Open [`report_template.md`](report_template.md) to find:
+- Pre-filled table structures matching Tables 1, 2, and 3 from the assignment
+  appendix.
+- Inline figure references for every plot (Figures 1–31).
+- `[YOUR …]` placeholder cells for your own observations and analysis.
+- Instructions for exporting to PDF.
+
+### Assignment 2 module overview
+
+| File | Purpose |
+|------|---------|
+| `stt_template.py` | STT processing functions + single-run demo |
+| `tts_template.py` | TTS synthesis functions + single-run demo |
+| `run_stt_experiments.py` | Automated A/B experiments (Table 1) |
+| `run_multi_param_experiment.py` | Best/worst multi-param experiment (Table 2) |
+| `run_tts_experiments.py` | TTS parameter sweep (Table 3) |
+| `report_template.md` | Markdown report template with tables & figure callouts |
 
 ---
 
@@ -131,3 +210,5 @@ See [`requirements.txt`](requirements.txt):
 * `librosa` – audio analysis
 * `soundfile` – WAV I/O
 * `pandas` – CSV output
+* `SpeechRecognition` *(optional)* – STT via Google API
+* `pyttsx3` *(optional)* – local TTS engine (requires `espeak-ng` on Linux)
