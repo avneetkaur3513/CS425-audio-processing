@@ -218,7 +218,7 @@ def transcribe_audio(signal: np.ndarray, sr: int) -> str:
             "[SpeechRecognition not installed – install with: "
             "pip install SpeechRecognition, then re-run]"
         )
-    except Exception as exc:  # noqa: BLE001
+    except (IOError, OSError, RuntimeError, ValueError) as exc:
         return f"[Transcription error: {exc}]"
 
 

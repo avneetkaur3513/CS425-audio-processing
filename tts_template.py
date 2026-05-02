@@ -103,7 +103,8 @@ def synthesize_tts(
         if voices and voice_index < len(voices):
             engine.setProperty("voice", voices[voice_index].id)
         if output_path is None:
-            output_path = tempfile.mktemp(suffix=".wav")
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+                output_path = tmp.name
         engine.save_to_file(text, output_path)
         engine.runAndWait()
         return output_path if os.path.isfile(output_path) else None
@@ -142,7 +143,8 @@ def generate_tts_audio(
     tuple(np.ndarray, int)
         (audio signal, sample rate)
     """
-    tmp_path = tempfile.mktemp(suffix=".wav")
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+        tmp_path = tmp.name
     wav_path = synthesize_tts(text, rate, voice_index, volume, tmp_path)
 
     if wav_path and os.path.isfile(wav_path) and os.path.getsize(wav_path) > 100:
