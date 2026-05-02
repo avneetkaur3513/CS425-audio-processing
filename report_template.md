@@ -88,7 +88,7 @@
 
 ---
 
-### Table 2 – Multiple Parameters Settings Experiment
+### Table 2 – Multiples parameters settings experiment
 
 > For each configuration you must set **at least 3 parameters**.
 > Place the spectrogram figures (Figures 9–11) **immediately after this table**.
@@ -96,7 +96,7 @@
 | System Condition | Configuration Used | Sample Output Text | Spectrograms observation | Explanation of Performance |
 |---|---|---|---|---|
 | **Original Audio** | No modifications | *[YOUR transcription]* | *[YOUR observation — e.g. "Full frequency range visible; clear harmonic structure; no artefacts."]* | *[YOUR explanation — e.g. "Cleanest condition; baseline for comparison."]* |
-| **Processed – Configuration A (best)** | `pre_emphasis=0.97`, `noise=0.0`, `speed=0.9`, `pitch=0` | *[YOUR transcription]* | *[YOUR observation — e.g. "High frequencies boosted; harmonics more visible in upper bands; speech slightly slower so more phoneme detail preserved."]* | *[YOUR explanation — e.g. "Pre-emphasis enhances consonant clarity; slower speed preserves phoneme duration; no noise or pitch distortion gives best recognition."]* |
+| **Processed – Configuration A (best)** | `pre_emphasis=0.97`, `noise=0.0`, `speed=0.9`, `pitch=-1` | *[YOUR transcription]* | *[YOUR observation — e.g. "High frequencies boosted; harmonics more visible in upper bands; speech slightly slower and pitch slightly lower so more phoneme detail preserved."]* | *[YOUR explanation — e.g. "Pre-emphasis enhances consonant clarity; slower speed preserves phoneme duration; slight pitch reduction deepens voice resonance; no noise distortion gives best recognition."]* |
 | **Processed – Configuration B (worst)** | `pre_emphasis=0.0`, `noise=0.02`, `speed=1.3`, `pitch=+3` | *[YOUR transcription]* | *[YOUR observation — e.g. "Broadband noise floor visible; time-axis compressed; harmonic grid shifted upward."]* | *[YOUR explanation — e.g. "Combination of noise, speed and pitch change degrades all aspects; recognition quality drops significantly."]* |
 
 ---
