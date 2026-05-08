@@ -143,7 +143,13 @@ python run_multi_param_experiment.py Speaking_Female.wav
 
 # Part 2 – TTS parameter sweep for all 10 parameters (Table 3, Figures 12–31)
 python run_tts_experiments.py
+
+# Generate an auto-filled report with Tables 1–3 + ordered figure embeds
+python generate_assignment2_report.py
 ```
+
+Generated report path:
+`outputs/assignment2/CS425_Assignment2_Report.md`
 
 For TTS synthesis with real speech (instead of the synthetic fallback) install
 `pyttsx3` and, on Linux, the `espeak-ng` system engine:
