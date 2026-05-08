@@ -138,9 +138,9 @@ def _check_required_files() -> tuple[list[str], list[str]]:
                 missing.append(p)
 
     if any(m.startswith(OUT_STT) for m in missing):
-        suggestions.append("Run: `python run_stt_experiments.py Speaking_Female.wav`")
+        suggestions.append('Run: `python run_stt_experiments.py "Audio files/Speaking_Female.wav"`')
     if any(m.startswith(OUT_STT_MULTI) for m in missing):
-        suggestions.append("Run: `python run_multi_param_experiment.py Speaking_Female.wav`")
+        suggestions.append('Run: `python run_multi_param_experiment.py "Audio files/Speaking_Female.wav"`')
     if any(m.startswith(OUT_TTS) for m in missing):
         suggestions.append("Run: `python run_tts_experiments.py`")
 

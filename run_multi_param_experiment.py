@@ -19,7 +19,7 @@ Usage
 -----
     python run_multi_param_experiment.py [audio_file]
 
-    audio_file defaults to "Speaking_Female.wav".
+    audio_file defaults to "Audio files/Speaking_Female.wav".
 """
 
 from __future__ import annotations
@@ -34,6 +34,7 @@ import librosa
 import soundfile as sf
 
 from stt_template import (
+    DEFAULT_AUDIO_FILE,
     process_audio,
     transcribe_audio,
     plot_waveform_spectrogram,
@@ -82,6 +83,7 @@ OUTPUT_DIR = "outputs/stt/multi_param"
 
 def _load_audio(audio_file: str) -> tuple[np.ndarray, int]:
     """Load audio file, or generate a synthetic fallback."""
+    print(f"[Load] Using input audio: {audio_file}")
     if os.path.isfile(audio_file):
         signal, sr = librosa.load(audio_file, sr=None, mono=True)
         print(f"[Load] '{audio_file}' ({len(signal)} samples @ {sr} Hz)")
@@ -89,7 +91,7 @@ def _load_audio(audio_file: str) -> tuple[np.ndarray, int]:
     from audio_io import generate_synthetic_audio
     print(
         f"[Load] '{audio_file}' not found – using synthetic speech signal.\n"
-        "       Place 'Speaking_Female.wav' here for real-audio results."
+        "       Place 'Speaking_Female.wav' at 'Audio files/Speaking_Female.wav' for real-audio results."
     )
     return generate_synthetic_audio(duration=5.0, sr=22050)
 
@@ -98,7 +100,7 @@ def _load_audio(audio_file: str) -> tuple[np.ndarray, int]:
 # Main
 # ---------------------------------------------------------------------------
 
-def main(audio_file: str = "Speaking_Female.wav") -> None:
+def main(audio_file: str = DEFAULT_AUDIO_FILE) -> None:
     signal, sr = _load_audio(audio_file)
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -173,8 +175,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "audio_file",
         nargs="?",
-        default="Speaking_Female.wav",
-        help="Input audio file (default: Speaking_Female.wav)",
+        default=DEFAULT_AUDIO_FILE,
+        help="Input audio file (default: Audio files/Speaking_Female.wav)",
     )
     args = parser.parse_args()
     main(args.audio_file)
