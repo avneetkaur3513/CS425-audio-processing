@@ -128,7 +128,7 @@ All new scripts are self-contained and do **not** modify the Assignment 1 code.
 
 ### Audio file
 
-Place `Speaking_Female.wav` in the repository root before running the STT
+Place `Speaking_Female.wav` at `Audio files/Speaking_Female.wav` before running the STT
 scripts.  If the file is absent the scripts automatically use a built-in
 synthetic speech-like signal so all plots are still produced.
 
@@ -136,10 +136,10 @@ synthetic speech-like signal so all plots are still produced.
 
 ```bash
 # Part 1 – STT: A/B experiments for every parameter (Table 1, Figures 1–8)
-python run_stt_experiments.py Speaking_Female.wav
+python run_stt_experiments.py "Audio files/Speaking_Female.wav"
 
 # Part 1 – Multi-parameter best/worst experiment (Table 2, Figures 9–11)
-python run_multi_param_experiment.py Speaking_Female.wav
+python run_multi_param_experiment.py "Audio files/Speaking_Female.wav"
 
 # Part 2 – TTS parameter sweep for all 10 parameters (Table 3, Figures 12–31)
 python run_tts_experiments.py

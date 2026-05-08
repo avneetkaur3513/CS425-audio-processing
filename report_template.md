@@ -357,16 +357,16 @@ every plot and output file used in this report:
 
 ```bash
 # Part 1 – STT A/B experiments (generates Figures 1–8, Table 1 data)
-python run_stt_experiments.py Speaking_Female.wav
+python run_stt_experiments.py "Audio files/Speaking_Female.wav"
 
 # Part 1 – Multi-parameter experiment (generates Figures 9–11, Table 2 data)
-python run_multi_param_experiment.py Speaking_Female.wav
+python run_multi_param_experiment.py "Audio files/Speaking_Female.wav"
 
 # Part 2 – TTS parameter sweep (generates Figures 12–31, Table 3 data)
 python run_tts_experiments.py
 ```
 
-If `Speaking_Female.wav` is not present, the STT scripts automatically use a
+If `Audio files/Speaking_Female.wav` is not present, the STT scripts automatically use a
 synthetic speech-like signal so all plots are still produced.
 
 ### Output locations

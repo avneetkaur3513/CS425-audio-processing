@@ -33,7 +33,12 @@ import soundfile as sf
 # ---------------------------------------------------------------------------
 # Parameters – modify these for each experiment
 # ---------------------------------------------------------------------------
-AUDIO_FILE   = "Speaking_Female.wav"
+DEFAULT_AUDIO_FILE = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "Audio files",
+    "Speaking_Female.wav",
+)
+AUDIO_FILE   = DEFAULT_AUDIO_FILE
 PRE_EMPHASIS = 0.97    # 0.0 = no boost | 0.5–0.8 = weak | 0.9–0.99 = standard
 NOISE_LEVEL  = 0.0     # 0.0 = clean    | 0.001–0.003 = very slight | 0.01 = moderate
 SPEED_FACTOR = 1.0     # 1.0 = normal   | >1 = faster | <1 = slower
@@ -286,6 +291,7 @@ def plot_waveform_spectrogram(
 
 if __name__ == "__main__":
     # ── Load audio ───────────────────────────────────────────────────────────
+    print(f"[STT] Using input audio: {AUDIO_FILE}")
     if os.path.isfile(AUDIO_FILE):
         signal, sr = librosa.load(AUDIO_FILE, sr=None, mono=True)
         print(f"[STT] Loaded '{AUDIO_FILE}' ({len(signal)} samples @ {sr} Hz)")
@@ -293,7 +299,7 @@ if __name__ == "__main__":
         from audio_io import generate_synthetic_audio
         print(
             f"[STT] '{AUDIO_FILE}' not found – using synthetic speech signal.\n"
-            "      Place 'Speaking_Female.wav' in this directory for real-audio results."
+            "      Place 'Speaking_Female.wav' at 'Audio files/Speaking_Female.wav' for real-audio results."
         )
         signal, sr = generate_synthetic_audio(duration=5.0, sr=22050)
 
